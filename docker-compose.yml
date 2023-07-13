@@ -1,0 +1,9 @@
+services:
+  backend:
+    build: .
+    command: python app.py
+    ports:
+      - "5000:5000"
+    volumes:
+      - "./app:/app"
+    env_file: .env
