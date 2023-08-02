@@ -1,7 +1,7 @@
 services:
   backend:
     build: .
-    command: python app.py
+    command: python server.py
     ports:
       - "5000:5000"
     volumes:

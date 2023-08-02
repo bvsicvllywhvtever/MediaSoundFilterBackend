@@ -1,0 +1,12 @@
+from flask import Flask
+from routes import routes
+
+server = Flask(__name__)
+server.register_blueprint(routes)
+
+@server.route('/')
+def main():
+    return "Hello World!"
+
+if __name__ == '__main__':
+    server.run(host='0.0.0.0', port=5000)
