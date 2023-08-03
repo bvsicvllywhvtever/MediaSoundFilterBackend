@@ -3,3 +3,4 @@ app/model/test.ipynb
 app/model/test_data
 .DS_Store
 app/__pycache__
+database/data

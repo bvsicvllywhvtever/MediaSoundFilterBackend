@@ -7,3 +7,13 @@ services:
     volumes:
       - "./app:/app"
     env_file: .env
+
+  db:
+    image: mariadb
+    restart: unless-stopped
+    ports: 
+      - 3306:3306
+    volumes:
+      - "./database/data:/var/lib/mysql"
+      - "./database/db_schema:/docker-entrypoint-initdb.d"
+    env_file: .env
