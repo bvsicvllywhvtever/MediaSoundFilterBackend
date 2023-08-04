@@ -14,17 +14,14 @@ def getMuteTimes(videoId, sounds):
     cursor = db.cursor()
 
     sound_placeholders = ', '.join(['%s'] * len(sounds))
+    placeholder_values = (videoId,) + tuple(sounds)
 
-    current_app.logger.info("GOT HERE", file=sys.stderr)
-    print (sounds)
-    print(sound_placeholders)
-
-    cursor.execute(f"SELECT start_time, end_time FROM Sound_Times JOIN Sounds on Sound_Times.sound = Sounds.id WHERE video_id=%s AND Sounds.sound IN ({sound_placeholders})" +
+    cursor.execute(f"SELECT start_time, end_time FROM Sound_Times JOIN Sounds on Sound_Times.sound = Sounds.id WHERE video_id=%s AND Sounds.sound IN ({sound_placeholders}) " +
                    "ORDER BY start_time, end_time",
-                    videoId, sounds)
+                    placeholder_values)
 
-    result = cursor.fetchall
-    simplify_times(result)
+    result = cursor.fetchall()
+    result = simplify_times(result)
 
     df = pd.DataFrame(result, columns = cursor.column_names)
     json_data = df.to_json(orient="records")
@@ -35,18 +32,19 @@ def getMuteTimes(videoId, sounds):
 
 
 def simplify_times(times):
+    current_app.logger.info(times)
     simplified_times = []
 
-    start = times[0].get("start_time")
+    start = times[0][0]
 
     for i in range(0, len(times) - 1):
-        first = times[i].get("end_time")
-        second = times[i+1].get("start_time")
+        first = times[i][1]
+        second = times[i+1][0]
 
         if(second > first + 1):
-            simplified_times.add((start, first))
+            simplified_times.append((start, first))
             start = second
         elif i == len(times) - 2:
-            simplified_times.add(start, times[i+1].get("end_time"))
+            simplified_times.append((start, times[i+1][1]))
 
     return simplified_times
