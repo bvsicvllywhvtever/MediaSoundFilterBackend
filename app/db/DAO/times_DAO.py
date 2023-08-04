@@ -1,7 +1,6 @@
 from ..db_connection import db
 import pandas as pd
 import json
-from flask import current_app
 
 def setMuteTime(videoId, sound, start_time, end_time):
     cursor = db.cursor()
@@ -32,7 +31,9 @@ def getMuteTimes(videoId, sounds):
 
 
 def simplify_times(times):
-    current_app.logger.info(times)
+    if(len(times) == 1):
+        return times
+
     simplified_times = []
 
     start = times[0][0]
@@ -44,7 +45,8 @@ def simplify_times(times):
         if(second > first + 1):
             simplified_times.append((start, first))
             start = second
-        elif i == len(times) - 2:
+
+        if i == len(times) - 2:
             simplified_times.append((start, times[i+1][1]))
 
     return simplified_times
