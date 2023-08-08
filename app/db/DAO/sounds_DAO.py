@@ -24,3 +24,11 @@ def categorizeSounds(sounds):
     categorized_sounds = [{"category" : k, "sounds": v} for k, v in categorized_sounds.items()]
     
     return categorized_sounds
+
+def setSounds(id, sounds):
+    cursor = db.cursor()
+
+    for sound in sounds:
+        for pair in sounds[sound]:
+            cursor.execute("INSERT INTO Sound_Times (video_id, sound, start_time, end_time) VALUES (%s, %s, %s, %s)", (id, sound, pair[0], pair[1]))
+            db.commit()
